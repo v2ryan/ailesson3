@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI App 建構教學：Google Stitch & AI Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #fafaf8;
+    --card:     #ffffff;
+    --border:   #e8e5df;
+    --accent:   #4a7c59;
+    --accent2:  #5b6abf;
+    --accent3:  #c2628d;
+    --text:     #2c2825;
+    --muted:    #8a8279;
+    --light:    #f3f1ec;
+    --radius:   14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-bottom: 44px;
+  }
+
+  /* Navigation */
+  .nav-header {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .nav-btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+  }
+  .nav-btn:hover {
+    background: var(--light);
+    color: var(--text);
+    border-color: var(--muted);
+  }
+  .nav-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 52px 0 18px;
+    color: var(--text);
+  }
+  .section-title .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #fff;
+  }
+  .num-green  { background: var(--accent); }
+  .num-purple { background: var(--accent2); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  }
+
+  /* Prompt styles */
+  .prompt-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    color: var(--muted);
+  }
+  
+  .prompt-box {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--text);
+    position: relative;
+    margin-bottom: 24px;
+    white-space: pre-wrap;
+  }
+
+  .copy-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    font-size: 0.7rem;
+    cursor: pointer;
+  }
+
+  /* Mockup */
+  .mockup-container {
+    background: var(--light);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .mock-screen {
+    width: 180px;
+    height: 280px;
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 10px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .mock-header { height: 12px; background: #eee; border-radius: 6px; margin-bottom: 12px; }
+  .circle-stat { width: 80px; height: 80px; border: 6px solid var(--accent); border-radius: 50%; border-right-color: #eee; margin: 20px auto; }
+
+  @media (max-width: 700px) {
+    .grid-md-2 { grid-template-columns: 1fr !important; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <div class="nav-header">
+      <a href="index.html" class="nav-btn">規格說明</a>
+      <a href="2.html" class="nav-btn active">教學指南 1</a>
+      <a href="3.html" class="nav-btn">教學指南 2</a>
+    </div>
+
+    <h1>🚀 AI App 建構 — <span>實戰教學 1</span></h1>
+    <p class="subtitle">使用 Google Stitch & AI Studio 從零開始打造功能性 App</p>
+
+    <!-- Project 1 -->
+    <div class="section-title">
+      <span class="num num-green">1</span>
+      專案一：個人財務追蹤器 (Finance Tracker)
+    </div>
+    
+    <div class="card grid-md-2" style="display:grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+      <div class="mockup-container">
+        <p style="font-size:0.85rem; font-weight:700; color:var(--muted);">介面結構圖解</p>
+        <div class="mock-screen">
+          <div class="mock-header"></div>
+          <div class="circle-stat"></div>
+          <div style="height:6px; background:#4a7c59; width:70%; border-radius:3px; margin: 12px auto;"></div>
+          <div style="height:6px; background:#5b6abf; width:45%; border-radius:3px; margin: 8px auto;"></div>
+        </div>
+        <div style="font-size:0.75rem; color:var(--muted); text-align:center;">
+          <strong>教學重點：</strong> 觀察提示詞如何轉化為 HTML/CSS 佈局
+        </div>
+      </div>
+
+      <div>
+        <div class="prompt-label">
+          <span>Step 1: Google Stitch (介面設計)</span>
+          <button class="copy-btn" onclick="copyText('p1-1')">複製</button>
+        </div>
+        <div class="prompt-box" id="p1-1">為「個人財務追蹤器」建立一個單文件 HTML App。
+使用 Tailwind CSS 打造現代簡潔的設計。
+UI 必須包含：
+1. 儀表板卡片佈局。
+2. 圓環圖（按類別顯示支出）的預留位置。
+3. 帶有百分比標籤的預算進度條。
+4. 近期交易列表區塊（每筆交易旁邊有小型收據縮圖預覽框）。
+5. 用於新增支出的浮動操作按鈕。
+6. 新增支出表單中包含「拍攝收據」按鈕（相機圖標），點擊後顯示圖片預覽區域。
+使用藍色和翠綠色配色方案。</div>
+
+        <div class="prompt-label">
+          <span>Step 2: AI Studio (功能邏輯)</span>
+          <button class="copy-btn" onclick="copyText('p1-2')">複製</button>
+        </div>
+        <div class="prompt-box" id="p1-2">增強財務追蹤器的功能：
+1. 數據邏輯：建立 JavaScript 陣列來儲存交易，並將其保存到 localStorage。
+2. 圖表：使用 Chart.js 渲染動態圓環圖，當數據變更時自動更新。
+3. 計算：自動計算總支出並更新預算進度條寬度。
+4. 報告：加入根據最高支出類別生成「月度摘要」文字分析的功能。
+5. 收據拍照：使用 HTML5 的 &lt;input type="file" accept="image/*" capture="environment"&gt; 讓用戶拍攝收據照片，將圖片轉為 Base64 並儲存到 localStorage，在交易記錄中顯示縮圖預覽。
+6. 圖片管理：點擊縮圖可全螢幕查看收據，長按可刪除圖片以節省儲存空間。</div>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="section-title">
+      <span class="num num-purple">2</span>
+      專案二：飲食卡路里追蹤器 (Calorie Tracker)
+    </div>
+    
+    <div class="card grid-md-2" style="display:grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+      <div class="mockup-container">
+        <p style="font-size:0.85rem; font-weight:700; color:var(--muted);">介面結構圖解</p>
+        <div class="mock-screen">
+          <div class="mock-header" style="background:#4a7c5922;"></div>
+          <div class="circle-stat" style="border-color:#4a7c59; width:90px; height:90px;"></div>
+          <div style="display:flex; gap:4px; justify-content:center;">
+            <div style="width:20px; height:20px; background:#c2628d22; border-radius:4px;"></div>
+            <div style="width:20px; height:20px; background:#5b6abf22; border-radius:4px;"></div>
+          </div>
+        </div>
+        <div style="font-size:0.75rem; color:var(--muted); text-align:center;">
+          <strong>教學重點：</strong> 數據輸入如何即時影響視覺圖形
+        </div>
+      </div>
+
+      <div>
+        <div class="prompt-label">
+          <span>Step 1: Google Stitch (介面設計)</span>
+          <button class="copy-btn" onclick="copyText('p2-1')">複製</button>
+        </div>
+        <div class="prompt-box" id="p2-1">設計一個「每日卡路里與宏量營養素追蹤器」Web App 介面。
+使用清新、有機的配色（綠色和橙色）。
+佈局必須包含：
+1. 中央圓形進度指示器（顯示每日總卡路里）。
+2. 顯示宏量營養素總量（蛋白質、碳水化合物、脂肪）的三張小卡片。
+3. 帶有早餐、午餐和晚餐圖示的「食物日誌」列表區塊（每餐旁邊有圓角食物照片縮圖）。
+4. 「新增食物」彈出式表單 UI，包含「拍攝食物」按鈕（相機圖標）和圖片預覽區。
+5. 底部導覽列包含「相簿」圖標，用於瀏覽所有食物照片。</div>
+
+        <div class="prompt-label">
+          <span>Step 2: AI Studio (功能邏輯)</span>
+          <button class="copy-btn" onclick="copyText('p2-2')">複製</button>
+        </div>
+        <div class="prompt-box" id="p2-2">實作卡路里追蹤器的邏輯：
+1. 狀態管理：追蹤當前卡路里對比每日目標（例如 2000 kcal）。
+2. 視覺反饋：當使用者接近限制時，動態更新圓形進度指示器的顏色（綠 > 黃 > 紅）。
+3. 數據輸入：允許輸入食物名稱和卡路里數值，並立即更新總數。
+4. 月度報告：使用 Chart.js 生成簡單長條圖，顯示過去 30 天的卡路里攝取量。
+5. 食物拍照：使用 HTML5 的 &lt;input type="file" accept="image/*" capture="environment"&gt; 讓用戶拍攝食物照片，將圖片壓縮後轉為 Base64 儲存到 localStorage，在飲食記錄中顯示食物縮圖。
+6. 相簿瀏覽：建立「我的飲食相簿」頁面，以網格形式展示所有拍攝的食物照片，點擊可查看該餐的詳細營養資訊。</div>
+      </div>
+    </div>
+
+</div>
+
+<script>
+function copyText(id) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('已複製到剪貼簿！');
+  });
+}
+</script>
+</body>
+</html>

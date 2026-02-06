@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>規格說明圖解</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #fafaf8;
+    --card:     #ffffff;
+    --border:   #e8e5df;
+    --accent:   #4a7c59;
+    --accent2:  #5b6abf;
+    --accent3:  #c2628d;
+    --text:     #2c2825;
+    --muted:    #8a8279;
+    --light:    #f3f1ec;
+    --radius:   14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-bottom: 44px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 52px 0 18px;
+    color: var(--text);
+  }
+  .section-title .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: #fff;
+  }
+  .num-green  { background: var(--accent); }
+  .num-purple { background: var(--accent2); }
+  .num-pink   { background: var(--accent3); }
+  .num-amber  { background: #b8860b; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  }
+
+  /* Layout diagram */
+  .layout-diagram {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 16px;
+    min-height: 320px;
+  }
+  .layout-box {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+  }
+  .layout-box.left  { border-color: var(--accent); background: rgba(74,124,89,0.03); }
+  .layout-box.right { border-color: var(--accent2); background: rgba(91,106,191,0.03); }
+
+  .layout-label {
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    padding: 2px 14px;
+    border-radius: 6px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #fff;
+  }
+  .label-green  { background: var(--accent); }
+  .label-purple { background: var(--accent2); }
+
+  .mini-cal {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    width: 100%;
+    max-width: 220px;
+    margin-top: 12px;
+  }
+  .mini-cal .day {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    background: rgba(74,124,89,0.05);
+    color: var(--muted);
+  }
+  .mini-cal .day.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+  }
+  .mini-cal .day.header {
+    background: none;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 0.63rem;
+  }
+
+  .img-placeholder {
+    width: 100%;
+    max-width: 260px;
+    aspect-ratio: 4/3;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(91,106,191,0.06), rgba(194,98,141,0.04));
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+  }
+
+  .audio-bar {
+    width: 100%;
+    max-width: 260px;
+    height: 42px;
+    border-radius: 21px;
+    background: rgba(91,106,191,0.07);
+    border: 1px solid rgba(91,106,191,0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    margin-top: 8px;
+  }
+  .play-btn-demo {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--accent2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.65rem;
+  }
+  .progress-demo {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(0,0,0,0.06);
+    position: relative;
+  }
+  .progress-demo::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 40%;
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent2);
+  }
+
+  .file-diagram {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+  .file-box {
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.83rem;
+    font-weight: 600;
+  }
+  .file-img {
+    background: rgba(74,124,89,0.07);
+    border: 1px solid rgba(74,124,89,0.18);
+    color: var(--accent);
+  }
+  .file-audio {
+    background: rgba(194,98,141,0.07);
+    border: 1px solid rgba(194,98,141,0.18);
+    color: var(--accent3);
+  }
+
+  .arrow { font-size: 1.4rem; color: var(--muted); }
+
+  .tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.83rem;
+    line-height: 2;
+    color: var(--muted);
+  }
+  .tree .folder  { color: var(--accent); font-weight: 600; }
+  .tree .file    { color: var(--text); }
+  .tree .comment { color: var(--muted); font-size: 0.73rem; }
+
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    margin: 16px 0;
+  }
+  .flow-step {
+    padding: 12px 18px;
+    border-radius: 10px;
+    background: rgba(91,106,191,0.05);
+    border: 1px solid rgba(91,106,191,0.12);
+    font-size: 0.83rem;
+    text-align: center;
+    max-width: 175px;
+  }
+  .flow-step strong { color: var(--accent2); }
+  .flow-step code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    background: rgba(91,106,191,0.07);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .note {
+    margin-top: 14px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: rgba(74,124,89,0.03);
+    border-left: 3px solid var(--accent);
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .note strong { color: var(--accent); }
+  .note code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: rgba(74,124,89,0.07);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+  .badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge-html { background: rgba(234,125,50,0.08); color: #c96a2b; border: 1px solid rgba(234,125,50,0.18); }
+  .badge-css  { background: rgba(56,160,220,0.08); color: #2888b8; border: 1px solid rgba(56,160,220,0.18); }
+  .badge-js   { background: rgba(210,170,30,0.08); color: #a08510; border: 1px solid rgba(210,170,30,0.18); }
+
+  /* Navigation */
+  .nav-header {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .nav-btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+  }
+  .nav-btn:hover {
+    background: var(--light);
+    color: var(--text);
+    border-color: var(--muted);
+  }
+  .nav-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* ---- Error grid ---- */
+  .error-grid {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .error-card {
+    flex: 1;
+    min-width: 180px;
+    padding: 18px;
+    border-radius: 10px;
+    background: var(--light);
+  }
+  .error-card p:first-child { font-weight: 700; margin-bottom: 6px; }
+  .error-card p:last-child  { font-size: 0.83rem; color: var(--muted); }
+
+  /* ================================
+     PROMPT COPY SECTION
+     ================================ */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 52px 0 8px;
+  }
+
+  .prompt-section { position: relative; }
+
+  .prompt-block {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    padding-top: 52px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.85;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 560px;
+    overflow-y: auto;
+  }
+  .prompt-block::-webkit-scrollbar { width: 6px; }
+  .prompt-block::-webkit-scrollbar-track { background: transparent; }
+  .prompt-block::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .copy-btn {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--muted);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .copy-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .copy-btn.copied {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  @media (max-width: 700px) {
+    .layout-diagram { grid-template-columns: 1fr; }
+    h1 { font-size: 1.5rem; }
+    .flow-step { max-width: 140px; font-size: 0.78rem; }
+    .prompt-block { font-size: 0.72rem; padding: 16px; padding-top: 48px; }
+    .copy-btn { top: 28px; right: 28px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="nav-header">
+    <a href="index.html" class="nav-btn active">規格說明</a>
+    <a href="2.html" class="nav-btn">教學指南 1</a>
+    <a href="3.html" class="nav-btn">教學指南 2</a>
+  </div>
+
+  <h1>📖 靜態日曆網站 — <span>規格圖解</span></h1>
+  <p class="subtitle">圖像化拆解 Prompt 做啲咩，底部附上原文方便 Copy &amp; Paste</p>
+
+  <div class="badges">
+    <span class="badge badge-html">HTML5 語意化</span>
+    <span class="badge badge-css">CSS3 極簡風</span>
+    <span class="badge badge-js">Vanilla JS 無框架</span>
+  </div>
+
+  <!-- Section 1: Layout -->
+  <div class="section-title">
+    <span class="num num-green">1</span>
+    頁面佈局 — 左右分欄
+  </div>
+  <div class="card">
+    <div class="layout-diagram">
+      <div class="layout-box left">
+        <span class="layout-label label-green">左側 — 互動日曆</span>
+        <p style="font-size:0.83rem; color:var(--muted); margin-bottom:8px;">點擊任何日期 → 右邊即時更新</p>
+        <div class="mini-cal">
+          <span class="day header">日</span><span class="day header">一</span><span class="day header">二</span><span class="day header">三</span><span class="day header">四</span><span class="day header">五</span><span class="day header">六</span>
+          <span class="day"></span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span><span class="day">6</span>
+          <span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span><span class="day">13</span>
+          <span class="day">14</span><span class="day active">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span><span class="day">19</span><span class="day">20</span>
+          <span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span><span class="day">27</span>
+          <span class="day">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span><span class="day"></span><span class="day"></span><span class="day"></span>
+        </div>
+      </div>
+      <div class="layout-box right">
+        <span class="layout-label label-purple">右側 — 展示區</span>
+        <div class="img-placeholder">🖼️</div>
+        <p style="font-size:0.8rem; color:var(--muted);">當天圖片（無圖時顯示優雅提示）</p>
+        <div class="audio-bar">
+          <div class="play-btn-demo">▶</div>
+          <div class="progress-demo"></div>
+          <span style="font-size:0.68rem; color:var(--muted);">2:30</span>
+        </div>
+        <p style="font-size:0.76rem; color:var(--muted); margin-top:6px;">自訂美化音訊播放器</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: File naming -->
+  <div class="section-title">
+    <span class="num num-purple">2</span>
+    檔名規則 — 日期即檔名
+  </div>
+  <div class="card">
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:16px; text-align:center;">
+      JavaScript 用 <code style="color:var(--accent2); font-family:'JetBrains Mono',monospace; font-size:0.82rem;">formatDateForFile()</code> 動態計算日期，拼成檔案路徑
+    </p>
+    <div class="file-diagram">
+      <span class="file-box file-img">media/2026-01-15.jpg</span>
+      <span class="file-box file-audio">media/2026-01-15.mp3</span>
+    </div>
+    <div class="flow" style="margin-top: 24px;">
+      <div class="flow-step"><strong>用戶點擊日期</strong><br>例如 1月15日</div>
+      <span class="arrow">→</span>
+      <div class="flow-step"><strong>JS 計算檔名</strong><br><code>2026-01-15</code></div>
+      <span class="arrow">→</span>
+      <div class="flow-step"><strong>嘗試載入</strong><br><code>media/2026-01-15.jpg</code><br><code>media/2026-01-15.mp3</code></div>
+      <span class="arrow">→</span>
+      <div class="flow-step"><strong>成功？顯示</strong><br>失敗？placeholder</div>
+    </div>
+    <div class="note">
+      <strong>核心邏輯：</strong>所有檔案命名都以 <code>YYYY-MM-DD</code> 為準，JS 會自動組合路徑。用戶只需將圖片/音訊丟入 <code>media/</code> 資料夾，命名正確即可。
+    </div>
+  </div>
+
+  <!-- Section 3: Folder structure -->
+  <div class="section-title">
+    <span class="num num-pink">3</span>
+    目錄結構
+  </div>
+  <div class="card">
+    <div class="tree">
+      <span class="folder">project/</span><br>
+      &nbsp;&nbsp;├── <span class="file">index.html</span> <span class="comment">← 主頁面</span><br>
+      &nbsp;&nbsp;├── <span class="folder">css/</span><br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="file">style.css</span> <span class="comment">← 所有樣式</span><br>
+      &nbsp;&nbsp;├── <span class="folder">js/</span><br>
+      &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="file">script.js</span> <span class="comment">← 日曆邏輯 + 檔案載入</span><br>
+      &nbsp;&nbsp;└── <span class="folder">media/</span> <span class="comment">← 放圖片 &amp; 音訊</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file" style="color:var(--accent)">2026-01-01.jpg</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="file" style="color:var(--accent3)">2026-01-01.mp3</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="comment">...</span>
+    </div>
+  </div>
+
+  <!-- Section 4: Error handling -->
+  <div class="section-title">
+    <span class="num num-green">4</span>
+    容錯處理
+  </div>
+  <div class="card">
+    <div class="error-grid">
+      <div class="error-card">
+        <p style="color:var(--accent);">✅ 有圖有音訊</p>
+        <p>正常顯示圖片 + 播放器</p>
+      </div>
+      <div class="error-card">
+        <p style="color:var(--accent2);">🖼️ 有圖無音訊</p>
+        <p>只顯示圖片，播放器隱藏</p>
+      </div>
+      <div class="error-card">
+        <p style="color:var(--accent3);">🤫 無圖無音訊</p>
+        <p>顯示「今日安靜」優雅提示<br>(onerror 觸發 placeholder)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================
+       Section 5: COPYABLE PROMPT
+       ============================= -->
+  <div class="divider"></div>
+
+  <div class="section-title">
+    <span class="num num-amber">📋</span>
+    原始 Prompt — 複製貼到 AI 生成網站
+  </div>
+  <div class="card prompt-section">
+    <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">
+      <span id="copyIcon">📋</span>
+      <span id="copyText">複製全文</span>
+    </button>
+    <div class="prompt-block" id="promptBlock">建立一個無需後端的靜態網站，透過 JavaScript 動態計算檔名來讀取 media/ 資料夾中的資源。
+
+# Tech Stack
+- HTML5 (語意化標籤)
+- CSS3 (配合 @ui-ux-pro-max 的極簡風格)
+- Vanilla JavaScript (無框架)
+
+# Core Logic Requirements (必須嚴格遵守)
+
+## 1. 檔名規則
+- 圖片路徑: `media/YYYY-MM-DD.jpg`
+- 音訊路徑: `media/YYYY-MM-DD.mp3`
+
+## 2. JavaScript 核心函數
+必須包含以下日期處理邏輯：
+
+```javascript
+function formatDateForFile(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; // 返回 2026-01-01 格式
+}
+```
+
+## 3. UI 互動要求
+- **左側**：可互動的日曆（點擊日期切換內容）
+- **右側**：展示區
+  - 若當天有圖，顯示圖片
+  - 若當天無圖，顯示 placeholder 或「今日安靜」的優雅提示 (handle onerror)
+  - 音訊播放器需美化，不要用預設醜醜的 `&lt;audio&gt;` 樣式
+
+## 4. 目錄結構
+```
+project/
+├── index.html
+├── css/
+│   └── style.css
+├── js/
+│   └── script.js
+└── media/          # 使用者未來上傳檔案的地方
+```</div>
+  </div>
+
+  <div class="note" style="margin-top: 18px; text-align: center;">
+    <strong>💡 提示：</strong>複製以上 Prompt，貼到 Claude / ChatGPT / VS Code Copilot，即可生成完整網站代碼。
+  </div>
+
+</div>
+
+<script>
+function copyPrompt() {
+  // Get raw text, fix HTML entities
+  const el = document.getElementById('promptBlock');
+  let text = el.innerText;
+  text = text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    const icon = document.getElementById('copyIcon');
+    const label = document.getElementById('copyText');
+    btn.classList.add('copied');
+    icon.textContent = '✅';
+    label.textContent = '已複製！';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      icon.textContent = '📋';
+      label.textContent = '複製全文';
+    }, 2000);
+  });
+}
+</script>
+</body>
+</html>

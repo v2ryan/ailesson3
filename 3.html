@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Stitch + AI Studio 實戰教學</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #fafaf8;
+    --card:     #ffffff;
+    --border:   #e8e5df;
+    --accent:   #4a7c59;
+    --accent2:  #5b6abf;
+    --accent3:  #c2628d;
+    --text:     #2c2825;
+    --muted:    #8a8279;
+    --light:    #f3f1ec;
+    --radius:   14px;
+    --green:    #34d399;
+    --orange:   #fb923c;
+    --pink:     #f472b6;
+    --yellow:   #fbbf24;
+    --red:      #f87171;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(74,124,89,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-size: 14px;
+    color: var(--accent2);
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--text) 30%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero p {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 640px;
+    margin-bottom: 40px;
+  }
+
+  .hero-flow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .flow-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  .flow-icon.stitch { background: rgba(74,124,89,0.07); border: 2px solid var(--accent); color: var(--accent); }
+  .flow-icon.export { background: rgba(251,191,36,0.07); border: 2px solid var(--yellow); color: var(--yellow); }
+  .flow-icon.studio { background: rgba(52,211,153,0.07); border: 2px solid var(--green); color: var(--green); }
+  .flow-icon.launch { background: rgba(244,114,182,0.07); border: 2px solid var(--pink); color: var(--pink); }
+
+  .flow-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .flow-arrow { font-size: 24px; color: var(--muted); margin-top: -20px; }
+
+  /* ===== SECTIONS ===== */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .project-section {
+    padding: 80px 0;
+    position: relative;
+  }
+
+  .project-section + .project-section {
+    border-top: 1px solid var(--border);
+  }
+
+  .section-number {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .section-number.blue { color: var(--accent2); }
+  .section-number.green { color: var(--green); }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 900;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .section-subtitle {
+    font-size: 17px;
+    color: var(--muted);
+    margin-bottom: 48px;
+    max-width: 600px;
+  }
+
+  /* ===== STEP CARDS ===== */
+  .steps-grid {
+    display: grid;
+    gap: 32px;
+  }
+
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 28px 0;
+  }
+
+  .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .step-num.stitch { background: var(--accent2); color: #fff; }
+  .step-num.studio { background: var(--green); color: #fff; }
+
+  .step-tool {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-left: auto;
+  }
+
+  .step-tool.stitch { background: rgba(91,106,191,0.07); color: var(--accent2); }
+  .step-tool.studio { background: rgba(52,211,153,0.07); color: var(--green); }
+
+  .step-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .step-body {
+    padding: 20px 28px 28px;
+  }
+
+  .step-desc {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+
+  /* ===== PROMPT BOX ===== */
+  .prompt-box {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    margin-top: 12px;
+  }
+
+  .prompt-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .prompt-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .copy-btn:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .copy-btn.copied {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  /* ===== APP PREVIEW (Graphical) ===== */
+  .app-preview {
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin: 32px 0;
+  }
+
+  .app-preview-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .phone-frame {
+    width: 280px;
+    margin: 0 auto;
+    background: #000;
+    border-radius: 32px;
+    padding: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .phone-screen {
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+    color: #1a1a2e;
+  }
+
+  /* Navigation */
+  .nav-header {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .nav-btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+  }
+  .nav-btn:hover {
+    background: var(--light);
+    color: var(--text);
+    border-color: var(--muted);
+  }
+  .nav-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* -- Finance App Mock -- */
+  .fin-header {
+    background: linear-gradient(135deg, #4f8cff, #38bdf8);
+    padding: 24px 20px 40px;
+    color: #fff;
+    position: relative;
+  }
+
+  .fin-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  .fin-balance-label { font-size: 12px; opacity: 0.8; }
+  .fin-balance { font-size: 28px; font-weight: 900; margin-top: 2px; font-family: 'DM Sans', sans-serif; }
+
+  .fin-cards {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+    margin-top: -24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .fin-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+
+  .fin-card-icon { font-size: 20px; margin-bottom: 4px; }
+  .fin-card-amount { font-size: 15px; font-weight: 700; font-family: 'DM Sans', sans-serif; }
+  .fin-card-label { font-size: 10px; color: #94a3b8; margin-top: 2px; }
+
+  .fin-section { padding: 16px; }
+  .fin-section-title { font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 10px; }
+
+  .fin-bar-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .fin-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .fin-bar-label { font-size: 11px; width: 45px; color: #64748b; text-align: right; flex-shrink: 0; }
+
+  .fin-bar-track {
+    flex: 1;
+    height: 14px;
+    background: #f1f5f9;
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .fin-bar-fill {
+    height: 100%;
+    border-radius: 7px;
+  }
+
+  .fin-bar-val { font-size: 11px; font-weight: 600; width: 36px; color: #334155; font-family: 'DM Sans', sans-serif; }
+
+  .fin-chart {
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 8px 0;
+  }
+
+  .fin-chart-bar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    min-height: 8px;
+  }
+
+  .fin-chart-labels {
+    display: flex;
+    gap: 6px;
+  }
+
+  .fin-chart-labels span {
+    flex: 1;
+    text-align: center;
+    font-size: 9px;
+    color: #94a3b8;
+  }
+
+  /* -- Calorie App Mock -- */
+  .cal-header {
+    background: linear-gradient(135deg, #34d399, #059669);
+    padding: 24px 20px 40px;
+    color: #fff;
+  }
+
+  .cal-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  .cal-ring-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .cal-ring {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 8px solid rgba(255,255,255,0.2);
+    border-top-color: #fff;
+    border-right-color: #fff;
+    border-bottom-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .cal-ring-num { font-size: 22px; font-weight: 900; font-family: 'DM Sans', sans-serif; }
+  .cal-ring-label { font-size: 9px; opacity: 0.8; }
+
+  .cal-ring-stats { text-align: left; }
+  .cal-ring-stat { margin-bottom: 6px; font-size: 12px; }
+  .cal-ring-stat span { display: block; font-size: 18px; font-weight: 700; font-family: 'DM Sans', sans-serif; }
+
+  .cal-cards {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+    margin-top: -24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cal-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+
+  .cal-card-icon { font-size: 18px; margin-bottom: 2px; }
+  .cal-card-val { font-size: 14px; font-weight: 700; font-family: 'DM Sans', sans-serif; }
+  .cal-card-label { font-size: 9px; color: #94a3b8; margin-top: 1px; }
+
+  .cal-section { padding: 16px; }
+  .cal-section-title { font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 10px; }
+
+  .cal-meal-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .cal-meal-item:last-child { border-bottom: none; }
+
+  .cal-meal-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .cal-meal-info { flex: 1; }
+  .cal-meal-name { font-size: 13px; font-weight: 600; color: #1e293b; }
+  .cal-meal-detail { font-size: 10px; color: #94a3b8; }
+  .cal-meal-kcal { font-size: 14px; font-weight: 700; color: #059669; font-family: 'DM Sans', sans-serif; }
+
+  /* ===== SCREENS GALLERY ===== */
+  .screens-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 32px 0;
+  }
+
+  .screen-thumb {
+    width: 140px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .screen-thumb-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+
+  .screen-thumb-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ===== WORKFLOW DIAGRAM ===== */
+  .workflow {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin: 40px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  }
+
+  .workflow-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 28px;
+    color: var(--text);
+  }
+
+  .workflow-steps {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .wf-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    min-width: 140px;
+    max-width: 200px;
+    padding: 0 8px;
+  }
+
+  .wf-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .wf-step-label { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+  .wf-step-desc { font-size: 12px; color: var(--muted); }
+
+  .wf-arrow {
+    display: flex;
+    align-items: center;
+    font-size: 28px;
+    color: var(--muted);
+    padding-top: 12px;
+  }
+
+  /* ===== TIPS ===== */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .tip-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  }
+
+  .tip-icon { font-size: 28px; margin-bottom: 8px; }
+  .tip-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+  .tip-desc { font-size: 13px; color: var(--muted); }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--muted);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    .hero-flow { gap: 8px; }
+    .flow-icon { width: 56px; height: 56px; font-size: 24px; border-radius: 16px; }
+    .flow-arrow { font-size: 18px; }
+    .phone-frame { width: 260px; }
+    .workflow-steps { flex-direction: column; align-items: center; }
+    .wf-arrow { transform: rotate(90deg); padding: 8px 0; }
+    .screens-row { gap: 12px; }
+    .screen-thumb { width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-header" style="padding: 20px;">
+  <a href="index.html" class="nav-btn">規格說明</a>
+  <a href="2.html" class="nav-btn">教學指南 1</a>
+  <a href="3.html" class="nav-btn active">教學指南 2</a>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-badge">📚 教學指南 2026</div>
+  <h1>Google Stitch<br>+ AI Studio<br>實戰教學</h1>
+  <p>從零開始，用兩個免費工具打造真正可運作的 App。無需寫程式碼，只需描述你的想法。</p>
+
+  <div class="hero-flow">
+    <div class="flow-step">
+      <div class="flow-icon stitch">💡</div>
+      <span class="flow-label">描述想法</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-icon stitch">🎨</div>
+      <span class="flow-label">Stitch 設計</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-icon export">📦</div>
+      <span class="flow-label">匯出代碼</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-icon studio">⚙️</div>
+      <span class="flow-label">AI Studio 建構</span>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="flow-icon launch">🚀</div>
+      <span class="flow-label">完成 App</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROJECT 1: FINANCE TRACKER ==================== -->
+<section class="project-section">
+  <div class="container">
+    <div class="section-number blue">PROJECT 01</div>
+    <h2 class="section-title">💰 個人財務追蹤器</h2>
+    <p class="section-subtitle">設計包含支出圖表、分類統計、預算進度條的財務 App，並加入數據儲存與自動計算功能。</p>
+
+    <!-- App Preview -->
+    <div class="app-preview">
+      <div class="app-preview-title">📱 預期成品預覽</div>
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="fin-header">
+            <div class="fin-header-top">
+              <span>👋 你好，SD</span>
+              <span>🔔</span>
+            </div>
+            <div class="fin-balance-label">本月餘額</div>
+            <div class="fin-balance">$12,450</div>
+          </div>
+          <div class="fin-cards">
+            <div class="fin-card">
+              <div class="fin-card-icon">📈</div>
+              <div class="fin-card-amount">$28,000</div>
+              <div class="fin-card-label">收入</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-icon">📉</div>
+              <div class="fin-card-amount">$15,550</div>
+              <div class="fin-card-label">支出</div>
+            </div>
+          </div>
+          <div class="fin-section">
+            <div class="fin-section-title">📊 本月支出分類</div>
+            <div class="fin-bar-group">
+              <div class="fin-bar-item">
+                <div class="fin-bar-label">餐飲</div>
+                <div class="fin-bar-track"><div class="fin-bar-fill" style="width:75%; background: linear-gradient(90deg, #4f8cff, #38bdf8);"></div></div>
+                <div class="fin-bar-val">$4.5k</div>
+              </div>
+              <div class="fin-bar-item">
+                <div class="fin-bar-label">交通</div>
+                <div class="fin-bar-track"><div class="fin-bar-fill" style="width:45%; background: linear-gradient(90deg, #34d399, #059669);"></div></div>
+                <div class="fin-bar-val">$2.7k</div>
+              </div>
+              <div class="fin-bar-item">
+                <div class="fin-bar-label">購物</div>
+                <div class="fin-bar-track"><div class="fin-bar-fill" style="width:60%; background: linear-gradient(90deg, #fb923c, #f97316);"></div></div>
+                <div class="fin-bar-val">$3.6k</div>
+              </div>
+              <div class="fin-bar-item">
+                <div class="fin-bar-label">娛樂</div>
+                <div class="fin-bar-track"><div class="fin-bar-fill" style="width:30%; background: linear-gradient(90deg, #f472b6, #ec4899);"></div></div>
+                <div class="fin-bar-val">$1.8k</div>
+              </div>
+            </div>
+          </div>
+          <div class="fin-section">
+            <div class="fin-section-title">📈 每週支出趨勢</div>
+            <div class="fin-chart">
+              <div class="fin-chart-bar" style="height:40%; background: #4f8cff;"></div>
+              <div class="fin-chart-bar" style="height:65%; background: #4f8cff;"></div>
+              <div class="fin-chart-bar" style="height:50%; background: #4f8cff;"></div>
+              <div class="fin-chart-bar" style="height:80%; background: #f87171;"></div>
+              <div class="fin-chart-bar" style="height:55%; background: #4f8cff;"></div>
+              <div class="fin-chart-bar" style="height:70%; background: #4f8cff;"></div>
+              <div class="fin-chart-bar" style="height:45%; background: #4f8cff;"></div>
+            </div>
+            <div class="fin-chart-labels">
+              <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screens needed -->
+    <div style="text-align:center; margin-bottom: 12px; font-size:14px; color:var(--muted); font-weight:600; letter-spacing:1px; text-transform:uppercase;">需要生成的畫面</div>
+    <div class="screens-row">
+      <div class="screen-thumb"><div class="screen-thumb-icon">🏠</div><div class="screen-thumb-label">主頁儀表板</div></div>
+      <div class="screen-thumb"><div class="screen-thumb-icon">➕</div><div class="screen-thumb-label">新增支出</div></div>
+      <div class="screen-thumb"><div class="screen-thumb-icon">📊</div><div class="screen-thumb-label">統計圖表</div></div>
+      <div class="screen-thumb"><div class="screen-thumb-icon">🎯</div><div class="screen-thumb-label">預算設定</div></div>
+      <div class="screen-thumb"><div class="screen-thumb-icon">⚙️</div><div class="screen-thumb-label">設定頁面</div></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num stitch">1</div>
+          <div class="step-title">用 Stitch 生成主頁面 UI</div>
+          <div class="step-tool stitch">Stitch</div>
+        </div>
+        <div class="step-body">
+          <div class="step-desc">打開 <strong>stitch.withgoogle.com</strong>，選擇 Mobile 模式，將以下提示詞貼入輸入框，按 Generate：</div>
+          <div class="prompt-box">
+            <div class="prompt-label">📋 STITCH 提示詞 — 主頁面</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">設計一個具備現代化藍色漸變頂欄的個人財務追蹤手機 App。主頁面儀表板應包括：頂部的用戶名稱問候語和通知鈴聲圖表、顯示金額的大字月結餘、頂欄下方的總收入（附向上箭頭圖標）和總支出（附向下箭頭圖標）兩個摘要卡片、一個顯示餐飲、交通、購物和娛樂等類別的橫向進度條支出類別區域（附顏色分類和金額）、以及底部顯示 7 天數據的每週支出趨勢柱狀圖。使用純白背景、圓角、柔和陰影以及專業的財務 App 視覺風格。色彩方案：以藍色 (#4F8CFF) 為主色，綠色代表收入，紅色代表超支警告。</div>
+          </div>
+
+          <div class="prompt-box" style="margin-top: 16px;">
+            <div class="prompt-label">📋 STITCH 提示詞 — 新增支出頁面</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">為財務追蹤 App 設計一個「新增支出」界面。包括：帶有返回箭頭和「新增支出」標題的頂部導覽列、帶有貨幣符號和數字鍵盤的大金額輸入欄位、顯示當前日期及日曆圖標的日期選擇器、帶有圖標和標籤的類別選擇網格（餐飲、交通、購物、娛樂、帳單、醫療、教育、其他）、可選的備註文字方塊、底部的藍色 (#4F8CFF) 「儲存支出」按鈕。保持一致的簡約白色設計風格，配備圓角和柔和陰影。</div>
+          </div>
+
+          <div class="prompt-box" style="margin-top: 16px;">
+            <div class="prompt-label">📋 STITCH 提示詞 — 統計圖表頁</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">為財務追蹤 App 設計一個「統計」界面。包括：頂部帶有左右箭頭的月份選擇器、顯示各類別支出比例的甜甜圈圖（附百分比標籤和顏色圖例）、「預算 vs 實際」區域（顯示每個類別預算上限和目前開支的進度條）、以及底部顯示過去 6 個月支出趨勢的月度比較折線圖。使用相同的藍色 (#4F8CFF) 色彩方案和簡約白色設計風格。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num stitch">2</div>
+          <div class="step-title">微調設計並匯出代碼</div>
+          <div class="step-tool stitch">Stitch</div>
+        </div>
+        <div class="step-body">
+          <div class="step-desc">在 Stitch 中使用對話功能微調設計（修改顏色、佈局），滿意後點擊 <strong>Export → View Code</strong>，選擇匯出 <strong>HTML/CSS</strong> 代碼。</div>
+          <div class="prompt-box">
+            <div class="prompt-label">💬 微調提示詞範例</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">將類別進度條加粗並改為圓角末端。在右下角增加一個懸浮按鈕 (+)，以便快速新增支出。將通知鈴聲改為顯示紅點提示。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num studio">3</div>
+          <div class="step-title">匯入 AI Studio 加入後端功能</div>
+          <div class="step-tool studio">AI Studio</div>
+        </div>
+        <div class="step-body">
+          <div class="step-desc">打開 <strong>aistudio.google.com</strong>，上傳從 Stitch 匯出的 HTML 文件，然後輸入以下提示詞讓 Gemini 加入完整功能：</div>
+          <div class="prompt-box">
+            <div class="prompt-label">📋 AI STUDIO 提示詞</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">將這個財務追蹤 UI 設計轉化為一個功能齊全的網頁應用程式。加入以下功能：
+
+1. 本地儲存 (LOCAL STORAGE)：將所有支出和收入數據儲存到瀏覽器的 localStorage，確保數據在不同工作階段之間能持久保存
+2. 新增支出表單：可捕捉金額、分類、日期和備註的功能性表單，並儲存到數據庫中
+3. 自動計算：自動計算總收入、總支出和剩餘餘額
+4. 動態圖表：根據真實數據動態渲染支出類別條和每週趨勢圖
+5. 類別分析：計算每個支出類別的百分比並更新進度條
+6. 預算提醒：當任何類別的支出超過設定預算的 80% 時顯示紅色警告
+7. 每月報告：生成顯示月度比較的摘要視圖
+8. 導出 CSV：添加一個按鈕，將所有交易記錄導出為 CSV 文件
+
+保持完全相同的視覺設計。使用 JavaScript 讓所有組件都具備互動性和功能。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PROJECT 2: CALORIE TRACKER ==================== -->
+<section class="project-section">
+  <div class="container">
+    <div class="section-number green">PROJECT 02</div>
+    <h2 class="section-title">🥗 飲食卡路里追蹤器</h2>
+    <p class="section-subtitle">設計包含每日攝取量、營養分類、飲食記錄的卡路里 App，並加入自動計算與月報功能。</p>
+
+    <!-- App Preview -->
+    <div class="app-preview">
+      <div class="app-preview-title">📱 預期成品預覽</div>
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="cal-header">
+            <div class="cal-header-top">
+              <span>📅 Today</span>
+              <span>👤</span>
+            </div>
+            <div class="cal-ring-area">
+              <div class="cal-ring">
+                <div class="cal-ring-num">1,420</div>
+                <div class="cal-ring-label">/ 2,000 kcal</div>
+              </div>
+              <div class="cal-ring-stats">
+                <div class="cal-ring-stat">🔴 碳水<span>156g</span></div>
+                <div class="cal-ring-stat">🟡 蛋白質<span>82g</span></div>
+                <div class="cal-ring-stat">🔵 脂肪<span>45g</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="cal-cards">
+            <div class="cal-card">
+              <div class="cal-card-icon">🔥</div>
+              <div class="cal-card-val">580</div>
+              <div class="cal-card-label">剩餘 kcal</div>
+            </div>
+            <div class="cal-card">
+              <div class="cal-card-icon">💧</div>
+              <div class="cal-card-val">6/8</div>
+              <div class="cal-card-label">杯水</div>
+            </div>
+            <div class="cal-card">
+              <div class="cal-card-icon">🏃</div>
+              <div class="cal-card-val">320</div>
+              <div class="cal-card-label">消耗 kcal</div>
+            </div>
+          </div>
+          <div class="cal-section">
+            <div class="cal-section-title">🍽 今日飲食記錄</div>
+            <div class="cal-meal-item">
+              <div class="cal-meal-icon" style="background:#fef3c7;">🌅</div>
+              <div class="cal-meal-info">
+                <div class="cal-meal-name">早餐</div>
+                <div class="cal-meal-detail">燕麥粥、雞蛋、牛奶</div>
+              </div>
+              <div class="cal-meal-kcal">420</div>
+            </div>
+            <div class="cal-meal-item">
+              <div class="cal-meal-icon" style="background:#d1fae5;">☀️</div>
+              <div class="cal-meal-info">
+                <div class="cal-meal-name">午餐</div>
+                <div class="cal-meal-detail">雞胸肉沙拉、全麥麵包</div>
+              </div>
+              <div class="cal-meal-kcal">580</div>
+            </div>
+            <div class="cal-meal-item">
+              <div class="cal-meal-icon" style="background:#ede9fe;">🍪</div>
+              <div class="cal-meal-info">
+                <div class="cal-meal-name">下午茶</div>
+                <div class="cal-meal-detail">蘋果、堅果</div>
+              </div>
+              <div class="cal-meal-kcal">220</div>
+            </div>
+            <div class="cal-meal-item">
+              <div class="cal-meal-icon" style="background:#e0e7ff;">🌙</div>
+              <div class="cal-meal-info">
+                <div class="cal-meal-name">晚餐</div>
+                <div class="cal-meal-detail">未記錄</div>
+              </div>
+              <div class="cal-meal-kcal" style="color:#94a3b8;">--</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screens needed -->
+    <div style="text-align:center; margin-bottom: 12px; font-size:14px; color:var(--muted); font-weight:600; letter-spacing:1px; text-transform:uppercase;">需要生成的畫面</div>
+    <div class="screens-row">
+      <div class="screen-thumb"><div class="screen-thumb-icon">🏠</div><div class="screen-thumb-label">每日總覽</div></div>
+      <div class="screen-thumb"><div class="screen-thumb-icon">➕</div><div class="screen-thumb-label">記錄飲食</div></div>
+      <div class="screen-thumb"><div class="screen-thumb-icon">📊</div><div class="screen-thumb-label">營養統計</div></div>
+      <div class="screen-thumb"><div class="screen-thumb-icon">🔍</div><div class="screen-thumb-label">食物搜尋</div></div>
+      <div class="screen-thumb"><div class="screen-thumb-icon">⚙️</div><div class="screen-thumb-label">目標設定</div></div>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num stitch">1</div>
+          <div class="step-title">用 Stitch 生成主頁面 UI</div>
+          <div class="step-tool stitch">Stitch</div>
+        </div>
+        <div class="step-body">
+          <div class="step-desc">打開 <strong>stitch.withgoogle.com</strong>，選擇 Mobile 模式，貼入以下提示詞：</div>
+          <div class="prompt-box">
+            <div class="prompt-label">📋 STITCH 提示詞 — 主頁面</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">設計一個帶有綠色漸變頂欄（#34D399 到 #059669）的卡路里追蹤手機 App。主頁面應包括：頂部帶有左右箭頭的日期選擇器、中心顯示已攝取卡路里與每日目標（例如 1420/2000 kcal）的大圓形進度環、進度環旁邊顯示碳水化合物、蛋白質和脂肪克數的營養成分統計（附帶紅色、黃色、藍色指示器）、頂欄下方用於顯示剩餘卡路里、飲水量（杯數）和運動消耗卡路里的三個摘要卡片、一個列出早餐、午餐、零食和晚餐的每日飲食記錄區域（每餐左側顯示圓角食物照片縮圖、附食物圖標、飲食描述和各自的卡路里數）、以及右下角用於新增食物的懸浮「+」按鈕。底部導覽列包含首頁、相簿、統計、設定四個圖標。純白背景、圓角卡片、柔和陰影，具備健康類 App 視覺感。</div>
+          </div>
+
+          <div class="prompt-box" style="margin-top: 16px;">
+            <div class="prompt-label">📋 STITCH 提示詞 — 記錄飲食頁</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">為卡路里追蹤 App 設計一個「新增食物」界面。包括：頂部作為藥丸狀標籤的用餐類型選擇器（早餐、午餐、零食、晚餐）、帶有放大鏡圖標的食物搜尋列、顯示先前記錄項目的橫向滾動「最近食物」區域、以卡片形式顯示常用食物的「快速新增」區域（包含食物表情符號、名稱和卡路里數，如白飯 200kcal、雞胸肉 165kcal、蘋果 95kcal、雞蛋 78kcal）、中間顯示大型「📷 拍攝食物」按鈕（帶虛線邊框的圓角區域，點擊後顯示圖片預覽）、底部的食物名稱、份量、卡路里、碳水、蛋白質、脂肪手動輸入欄位、以及綠色的「新增食物」按鈕。使用相同的綠色 (#34D399) 色彩方案和簡約設計風格。</div>
+          </div>
+
+          <div class="prompt-box" style="margin-top: 16px;">
+            <div class="prompt-label">📋 STITCH 提示詞 — 營養統計頁</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">為卡路里追蹤 App 設計一個「營養統計」界面。包括：頂部的週/月切換開關、顯示過去 7 天每日卡路里攝取量的折線圖（附有指示每日目標的水平線）、顯示碳水/蛋白質/脂肪比例的營養比例甜甜圈圖（附百分比標籤）、顯示平均卡路里、平均蛋白質、平均飲水量的「每日平均」卡片，以及一個顯示連續達成卡路里目標天數並附有火燄表情符號的「連捷」計數器。使用相同的綠色 (#34D399) 色彩方案和簡約健康 App 設計。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num stitch">2</div>
+          <div class="step-title">微調設計並匯出代碼</div>
+          <div class="step-tool stitch">Stitch</div>
+        </div>
+        <div class="step-body">
+          <div class="step-desc">使用 Stitch 對話功能微調，然後匯出 HTML/CSS 代碼。</div>
+          <div class="prompt-box">
+            <div class="prompt-label">💬 微調提示詞範例</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">將圓形進度環加粗並加入漸變效果。在卡路里數值更新時加入細微動畫。將用餐圖標改為具有彩色圓形背景。加入包含首頁、搜尋、統計和個人檔案標籤的底部導覽列。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-num studio">3</div>
+          <div class="step-title">匯入 AI Studio 加入後端功能</div>
+          <div class="step-tool studio">AI Studio</div>
+        </div>
+        <div class="step-body">
+          <div class="step-desc">打開 <strong>aistudio.google.com</strong>，上傳 HTML 文件後輸入以下提示詞：</div>
+          <div class="prompt-box">
+            <div class="prompt-label">📋 AI STUDIO 提示詞</div>
+            <button class="copy-btn" onclick="copyPrompt(this)">複製</button>
+            <div class="prompt-text">將這個卡路里追蹤 UI 設計轉化為一個功能齊全的網頁應用程式。加入以下功能：
+
+1. 本地儲存 (LOCAL STORAGE)：將所有飲食記錄數據儲存到瀏覽器的 localStorage，確保數據能持久保存
+2. 食物數據庫：建立一個包含 50 多種常用食物及其卡路里、碳水、蛋白質和脂肪數值的內置數據庫
+3. 食物搜尋：具備即時搜尋功能，當用戶輸入時過濾食物數據庫
+4. 飲食記錄：允許用戶將食物添加到早餐、午餐、零食或晚餐，並可設置份量倍數
+5. 自動計算：自動計算每日總卡路里、剩餘卡路里和各營養成分總量
+6. 圓形進度：根據實際攝取的卡路里與每日目標動態顯示進度環動畫
+7. 飲水追蹤：具備「+」和「-」按鈕的功能性飲水計數器
+8. 每週統計：根據真實數據計算並渲染 7 天卡路里趨勢折線圖
+9. 連捷計數：追蹤用戶達成卡路里目標的連續天數
+10. 每日目標設定：允許用戶自定義每日卡路里和營養目標
+11. 導出報告：生成可下載的每週摘要報告
+12. 食物拍照功能：使用 HTML5 的 &lt;input type="file" accept="image/*" capture="environment"&gt; 讓用戶拍攝食物照片，將圖片壓縮至 800px 寬度後轉為 Base64 儲存到 localStorage，在每餐記錄旁顯示食物縮圖
+13. 相簿瀏覽：建立「我的飲食相簿」頁面，以瀑布流網格形式展示所有拍攝的食物照片，點擊可查看該餐的詳細營養資訊和拍攝日期
+14. 圖片管理：支援刪除舊照片以釋放儲存空間，當 localStorage 接近 5MB 上限時自動提示用戶清理
+
+保持完全相同的視覺設計。使用 JavaScript 讓所有組件都具備互動性和功能。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== WORKFLOW SUMMARY ==================== -->
+<section class="project-section">
+  <div class="container">
+    <div class="workflow">
+      <div class="workflow-title">🔄 完整工作流程</div>
+      <div class="workflow-steps">
+        <div class="wf-step">
+          <div class="wf-icon" style="background: rgba(91,106,191,0.07); border: 2px solid var(--accent2); color: var(--accent2);">1</div>
+          <div class="wf-step-label">構思 & 提示詞</div>
+          <div class="wf-step-desc">列出所需頁面和功能，寫好具體的 Stitch 提示詞</div>
+        </div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-step">
+          <div class="wf-icon" style="background: rgba(74,124,89,0.07); border: 2px solid var(--accent); color: var(--accent);">2</div>
+          <div class="wf-step-label">Stitch 生成 UI</div>
+          <div class="wf-step-desc">逐頁生成 UI 設計，用對話微調至滿意</div>
+        </div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-step">
+          <div class="wf-icon" style="background: rgba(251,191,36,0.07); border: 2px solid var(--yellow); color: var(--yellow);">3</div>
+          <div class="wf-step-label">匯出 HTML/CSS</div>
+          <div class="wf-step-desc">點擊 Export 匯出前端代碼文件</div>
+        </div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-step">
+          <div class="wf-icon" style="background: rgba(52,211,153,0.07); border: 2px solid var(--green); color: var(--green);">4</div>
+          <div class="wf-step-label">AI Studio 建構</div>
+          <div class="wf-step-desc">上傳代碼，用提示詞加入後端邏輯</div>
+        </div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-step">
+          <div class="wf-icon" style="background: rgba(244,114,182,0.07); border: 2px solid var(--pink); color: var(--pink);">5</div>
+          <div class="wf-step-label">測試 & 上線</div>
+          <div class="wf-step-desc">測試功能，部署到 Firebase Hosting</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 8px; color: var(--text);">💡 提示詞技巧</h3>
+    <p style="color: var(--muted); margin-bottom: 16px;">掌握這些技巧，讓 AI 產出更符合你需要的結果。</p>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">🎯</div>
+        <div class="tip-title">越具體越好</div>
+        <div class="tip-desc">「藍色漸變頭部、圓角卡片、帶陰影」比「設計一個漂亮的 App」好 10 倍。指定顏色代碼（如 #4F8CFF）、元件位置和尺寸。</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📐</div>
+        <div class="tip-title">描述佈局結構</div>
+        <div class="tip-desc">用「at top / below the header / at bottom right」等空間描述，幫助 AI 理解元件的相對位置和排列方式。</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🔄</div>
+        <div class="tip-title">迭代微調</div>
+        <div class="tip-desc">第一次生成不完美是正常的！使用 Stitch 的對話功能逐步修改：「把按鈕改大一點」「把標題移到左邊」。</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📝</div>
+        <div class="tip-title">AI Studio 要列清單</div>
+        <div class="tip-desc">在 AI Studio 的提示詞中用編號列出每個功能需求，Gemini 會逐一實現。功能描述越明確，生成的代碼越完整。</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🎨</div>
+        <div class="tip-title">指定設計風格</div>
+        <div class="tip-desc">加入風格關鍵字：「modern」「minimal」「glassmorphism」「neumorphism」「material design」讓結果更有質感。</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📱</div>
+        <div class="tip-title">逐頁生成</div>
+        <div class="tip-desc">一次只生成一個畫面效果最好。不要在一個提示詞中塞入太多頁面，分開生成後再用 Prototype 功能連結。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>Google Stitch + AI Studio 實戰教學 · 2026</p>
+  <p style="margin-top:8px;">🔗 stitch.withgoogle.com · aistudio.google.com</p>
+</footer>
+
+<script>
+function copyPrompt(btn) {
+  const promptText = btn.parentElement.querySelector('.prompt-text').textContent;
+  navigator.clipboard.writeText(promptText).then(() => {
+    btn.textContent = '已複製 ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '複製';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // Fallback for older browsers
+    const textarea = document.createElement('textarea');
+    textarea.value = promptText;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    btn.textContent = '已複製 ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '複製';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
