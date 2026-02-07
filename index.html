@@ -213,6 +213,8 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.83rem;
     font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
   .file-img {
     background: rgba(74,124,89,0.07);
@@ -223,6 +225,10 @@
     background: rgba(194,98,141,0.07);
     border: 1px solid rgba(194,98,141,0.18);
     color: var(--accent3);
+  }
+  .file-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
 
   .arrow { font-size: 1.4rem; color: var(--muted); }
@@ -598,6 +604,40 @@ project/
 
   <div class="note" style="margin-top: 18px; text-align: center;">
     <strong>💡 提示：</strong>複製以上 Prompt，貼到 Claude / ChatGPT / VS Code Copilot，即可生成完整網站代碼。
+  </div>
+
+  <!-- Section: Downloads -->
+  <div class="divider"></div>
+
+  <div class="section-title">
+    <span class="num num-amber">📥</span>
+    範例下載 — Sample &amp; Media 檔案
+  </div>
+  <div class="card">
+    <p style="color:var(--muted); font-size:0.88rem; margin-bottom:20px; text-align:center;">
+      下載完成品範例及媒體素材，直接體驗日曆網站的效果
+    </p>
+
+    <!-- Sample HTML -->
+    <div style="margin-bottom:20px;">
+      <p style="font-size:0.85rem; font-weight:700; color:var(--accent2); margin-bottom:10px;">📄 完成品範例</p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <a href="sample.html" download class="file-box" style="text-decoration:none; background:rgba(91,106,191,0.07); border:1px solid rgba(91,106,191,0.18); color:var(--accent2);">📝 sample.html</a>
+      </div>
+    </div>
+
+    <!-- Media Files - single zip -->
+    <div>
+      <p style="font-size:0.85rem; font-weight:700; color:var(--accent); margin-bottom:10px;">🗂️ 媒體素材 + 範例（一鍵下載）</p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+        <a href="media-sample.zip" download class="file-box" style="text-decoration:none; padding:14px 28px; font-size:0.9rem; background:linear-gradient(135deg, rgba(74,124,89,0.10), rgba(91,106,191,0.10)); border:1px solid rgba(74,124,89,0.22); color:var(--accent);">📦 media-sample.zip</a>
+        <span style="font-size:0.78rem; color:var(--muted);">含 sample.html + media/ 資料夾（3 張圖片 + 3 個音訊）</span>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:16px;">
+      <strong>使用方式：</strong>下載 <code>media-sample.zip</code> 並解壓縮，即可得到 <code>sample.html</code> 及 <code>media/</code> 資料夾，用瀏覽器開啟 <code>sample.html</code> 即可體驗。
+    </div>
   </div>
 
 </div>
