@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日光景 — Daily Media Viewer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&family=Fira+Code:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&family=Nunito:wght@300;400;600&display=swap');
+
+:root,[data-theme="editorial"]{--bg:#F6F3EE;--surface:#FFFFFF;--border:#E4DFD7;--text:#2C2824;--text-mute:#8A837A;--accent:#B8672A;--accent-soft:#F0E0D0;--shadow:0 2px 20px rgba(44,40,36,.06);--radius:12px;--font-display:'Cormorant Garamond',serif;--font-body:'DM Sans',sans-serif}
+[data-theme="soft"]{--bg:#FBF5F3;--surface:#FFFFFF;--border:#F0DDD8;--text:#4A3631;--text-mute:#B09690;--accent:#D4836B;--accent-soft:#FAEAE4;--shadow:0 4px 24px rgba(212,131,107,.08);--radius:16px;--font-display:'Lora',serif;--font-body:'Nunito',sans-serif}
+[data-theme="modern"]{--bg:#F4F5F7;--surface:#FFFFFF;--border:#E2E4E9;--text:#1A1D23;--text-mute:#8B8F9A;--accent:#4361EE;--accent-soft:#E8EDFF;--shadow:0 1px 12px rgba(67,97,238,.08);--radius:10px;--font-display:'Outfit',sans-serif;--font-body:'Outfit',sans-serif}
+[data-theme="dark"]{--bg:#121217;--surface:#1C1C24;--border:#2A2A35;--text:#E8E6E3;--text-mute:#6E6D78;--accent:#A78BFA;--accent-soft:#2D2640;--shadow:0 2px 20px rgba(0,0,0,.3);--radius:12px;--font-display:'Outfit',sans-serif;--font-body:'DM Sans',sans-serif}
+[data-theme="light"]{--bg:#FFFFFF;--surface:#F8F9FA;--border:#EBEDEF;--text:#202124;--text-mute:#9AA0A6;--accent:#1A73E8;--accent-soft:#E3F0FF;--shadow:0 1px 8px rgba(0,0,0,.06);--radius:8px;--font-display:'Playfair Display',serif;--font-body:'DM Sans',sans-serif}
+[data-theme="terminal"]{--bg:#0D1117;--surface:#161B22;--border:#21262D;--text:#C9D1D9;--text-mute:#545D68;--accent:#3FB950;--accent-soft:#1B2E1F;--shadow:0 0 12px rgba(63,185,80,.06);--radius:6px;--font-display:'Fira Code',monospace;--font-body:'Fira Code',monospace}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .4s ease,color .4s ease}
+.hidden{display:none!important}
+
+.site-header{padding:1.25rem 3rem;display:flex;align-items:center;gap:1rem;border-bottom:1px solid var(--border);background:var(--surface);transition:background .4s,border-color .4s}
+.header-left{display:flex;align-items:baseline;gap:1rem}
+.site-header h1{font-family:var(--font-display);font-weight:300;font-size:1.75rem;letter-spacing:.02em;color:var(--text);transition:color .4s}
+.site-header .subtitle{font-size:.8rem;color:var(--text-mute);font-weight:300;letter-spacing:.06em;text-transform:uppercase;transition:color .4s}
+
+.theme-switcher{margin-left:auto;display:flex;align-items:center;gap:.35rem;padding:4px;background:var(--bg);border-radius:99px;border:1px solid var(--border);transition:background .4s,border-color .4s}
+.theme-btn{width:32px;height:32px;border:2px solid transparent;border-radius:50%;cursor:pointer;position:relative;transition:all .25s ease;display:flex;align-items:center;justify-content:center;background:transparent;padding:0}
+.theme-btn:hover{transform:scale(1.15)}
+.theme-btn.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.theme-btn .swatch{width:20px;height:20px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.08)}
+.theme-btn[data-theme="editorial"] .swatch{background:linear-gradient(135deg,#F6F3EE 50%,#B8672A 50%)}
+.theme-btn[data-theme="soft"] .swatch{background:linear-gradient(135deg,#FBF5F3 50%,#D4836B 50%)}
+.theme-btn[data-theme="modern"] .swatch{background:linear-gradient(135deg,#F4F5F7 50%,#4361EE 50%)}
+.theme-btn[data-theme="dark"] .swatch{background:linear-gradient(135deg,#121217 50%,#A78BFA 50%);border-color:rgba(255,255,255,.12)}
+.theme-btn[data-theme="light"] .swatch{background:linear-gradient(135deg,#FFFFFF 50%,#1A73E8 50%)}
+.theme-btn[data-theme="terminal"] .swatch{background:linear-gradient(135deg,#0D1117 50%,#3FB950 50%);border-color:rgba(255,255,255,.12)}
+.theme-btn::after{content:attr(data-label);position:absolute;bottom:-28px;left:50%;transform:translateX(-50%) translateY(4px);font-size:.65rem;font-family:var(--font-body);color:var(--text-mute);background:var(--surface);border:1px solid var(--border);padding:2px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:10}
+.theme-btn:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.main-layout{display:grid;grid-template-columns:360px 1fr;min-height:calc(100vh - 64px)}
+.calendar-panel{background:var(--surface);border-right:1px solid var(--border);padding:2rem;display:flex;flex-direction:column;gap:1.5rem;transition:background .4s,border-color .4s}
+.cal-nav{display:flex;align-items:center;justify-content:space-between}
+.cal-nav .month-label{font-family:var(--font-display);font-size:1.35rem;font-weight:400;letter-spacing:.02em}
+.cal-nav button{width:36px;height:36px;border:1px solid var(--border);border-radius:50%;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-mute);font-size:1rem;transition:all .2s}
+.cal-nav button:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.cal-grid .day-header{font-size:.7rem;font-weight:500;color:var(--text-mute);text-transform:uppercase;letter-spacing:.1em;padding:.6rem 0}
+.cal-grid .day-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.85rem;border-radius:50%;cursor:pointer;transition:all .2s;position:relative;color:var(--text)}
+.cal-grid .day-cell.empty{cursor:default}
+.cal-grid .day-cell:not(.empty):hover{background:var(--accent-soft);color:var(--accent)}
+.cal-grid .day-cell.today{font-weight:600;color:var(--accent)}
+.cal-grid .day-cell.today::after{content:'';position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.cal-grid .day-cell.selected{background:var(--accent);color:#fff;font-weight:500}
+.cal-grid .day-cell.selected::after{background:#fff}
+.btn-today{margin-top:.5rem;padding:.45rem 1rem;border:1px solid var(--border);border-radius:20px;background:transparent;font-size:.78rem;color:var(--text-mute);cursor:pointer;align-self:center;transition:all .2s;font-family:var(--font-body)}
+.btn-today:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.selected-date-info{margin-top:auto;padding-top:1.5rem;border-top:1px solid var(--border)}
+.selected-date-info .date-display{font-family:var(--font-display);font-size:1.6rem;font-weight:300;line-height:1.3}
+.selected-date-info .weekday{font-size:.78rem;color:var(--text-mute);margin-top:.25rem;letter-spacing:.04em}
+
+.content-panel{padding:3rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;overflow-y:auto}
+.image-container{width:100%;max-width:720px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:var(--surface);animation:fadeUp .5s ease both;transition:box-shadow .4s,border-radius .4s}
+.image-container img{width:100%;display:block;object-fit:contain;max-height:60vh;background:var(--bg)}
+.placeholder{width:100%;max-width:720px;aspect-ratio:16/10;border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;animation:fadeUp .5s ease both;transition:background .4s,box-shadow .4s,border-radius .4s}
+.placeholder .icon{width:64px;height:64px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:background .4s}
+.placeholder .icon svg{width:28px;height:28px;stroke:var(--text-mute);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.placeholder .msg{font-family:var(--font-display);font-size:1.3rem;font-weight:300;color:var(--text-mute);font-style:italic}
+.placeholder .sub-msg{font-size:.78rem;color:var(--text-mute);opacity:.7}
+
+.audio-player{width:100%;max-width:720px;background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;animation:fadeUp .5s ease .1s both;transition:background .4s,box-shadow .4s,border-radius .4s}
+.play-btn{width:44px;height:44px;min-width:44px;border:none;border-radius:50%;background:var(--accent);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s}
+.play-btn:hover{transform:scale(1.08);filter:brightness(.9)}
+.play-btn svg{width:18px;height:18px;fill:currentColor}
+.player-body{flex:1;display:flex;flex-direction:column;gap:.5rem}
+.player-body .track-name{font-size:.78rem;color:var(--text-mute);letter-spacing:.03em}
+.progress-bar{width:100%;height:4px;background:var(--bg);border-radius:2px;cursor:pointer;position:relative;overflow:hidden}
+.progress-bar .progress{height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width .1s linear}
+.time-display{display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-mute);font-variant-numeric:tabular-nums}
+.volume-control{display:flex;align-items:center;gap:.5rem}
+.volume-control svg{width:16px;height:16px;stroke:var(--text-mute);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;cursor:pointer}
+.volume-slider{-webkit-appearance:none;appearance:none;width:70px;height:3px;background:var(--border);border-radius:2px;outline:none}
+.volume-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);cursor:pointer}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:860px){.main-layout{grid-template-columns:1fr}.calendar-panel{border-right:none;border-bottom:1px solid var(--border);padding:1.5rem}.content-panel{padding:2rem 1.5rem}.site-header{padding:1.25rem 1.5rem;flex-wrap:wrap}.header-left{flex-direction:column;gap:.25rem}.theme-switcher{margin-left:0;width:100%;justify-content:center}}
+@media(max-width:480px){.cal-grid .day-cell{font-size:.78rem}.image-container img{max-height:45vh}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-left"><h1>每日光景</h1><span class="subtitle">Daily Media Viewer</span></div>
+  <div class="theme-switcher">
+    <button class="theme-btn active" data-theme="editorial" data-label="Editorial"><span class="swatch"></span></button>
+    <button class="theme-btn" data-theme="soft" data-label="Soft"><span class="swatch"></span></button>
+    <button class="theme-btn" data-theme="modern" data-label="Modern"><span class="swatch"></span></button>
+    <button class="theme-btn" data-theme="dark" data-label="Dark"><span class="swatch"></span></button>
+    <button class="theme-btn" data-theme="light" data-label="Light"><span class="swatch"></span></button>
+    <button class="theme-btn" data-theme="terminal" data-label="Terminal"><span class="swatch"></span></button>
+  </div>
+</header>
+<div class="main-layout">
+  <aside class="calendar-panel">
+    <nav class="cal-nav"><button class="btn-prev" aria-label="上個月">&#8249;</button><span class="month-label"></span><button class="btn-next" aria-label="下個月">&#8250;</button></nav>
+    <div class="cal-grid"><span class="day-header">日</span><span class="day-header">一</span><span class="day-header">二</span><span class="day-header">三</span><span class="day-header">四</span><span class="day-header">五</span><span class="day-header">六</span></div>
+    <button class="btn-today">回到今天</button>
+    <div class="selected-date-info"><div class="date-display"></div><div class="weekday"></div></div>
+  </aside>
+  <main class="content-panel">
+    <div class="image-container hidden"><img src="" alt=""></div>
+    <div class="placeholder">
+      <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/></svg></div>
+      <span class="msg">今日安靜</span><span class="sub-msg">這一天尚未留下圖像紀錄</span>
+    </div>
+    <div class="audio-player hidden">
+      <button class="play-btn" aria-label="播放"><svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg></button>
+      <div class="player-body"><span class="track-name"></span><div class="progress-bar"><div class="progress"></div></div><div class="time-display"><span class="time-current">0:00</span><span class="time-duration">0:00</span></div></div>
+      <div class="volume-control"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg><input type="range" class="volume-slider" min="0" max="1" step="0.05" value="0.8"></div>
+    </div>
+  </main>
+</div>
+<script>
+(function(){
+  'use strict';
+  let currentYear,currentMonth,selectedDate=new Date();
+  let $monthLabel,$calGrid,$imgContainer,$placeholder,$audioPlayer;
+  let audioEl=new Audio();
+  function formatDateForFile(d){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return`${y}-${m}-${dd}`}
+  function isSameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+  const WD=['日','一','二','三','四','五','六'];
+  const MO=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  function fmtLong(d){return`${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日`}
+  function renderCalendar(){
+    $monthLabel.textContent=`${MO[currentMonth]}  ${currentYear}`;
+    const headers=$calGrid.querySelectorAll('.day-header');$calGrid.innerHTML='';headers.forEach(h=>$calGrid.appendChild(h));
+    if(!$calGrid.querySelector('.day-header')){WD.forEach(d=>{const el=document.createElement('span');el.className='day-header';el.textContent=d;$calGrid.appendChild(el)})}
+    const firstDay=new Date(currentYear,currentMonth,1).getDay(),daysInMonth=new Date(currentYear,currentMonth+1,0).getDate(),today=new Date();
+    for(let i=0;i<firstDay;i++){const el=document.createElement('span');el.className='day-cell empty';$calGrid.appendChild(el)}
+    for(let d=1;d<=daysInMonth;d++){const el=document.createElement('span');el.className='day-cell';el.textContent=d;const cd=new Date(currentYear,currentMonth,d);if(isSameDay(cd,today))el.classList.add('today');if(isSameDay(cd,selectedDate))el.classList.add('selected');el.addEventListener('click',()=>selectDate(cd));$calGrid.appendChild(el)}
+    updateDateInfo();
+  }
+  function updateDateInfo(){const $d=document.querySelector('.date-display'),$w=document.querySelector('.weekday');if($d)$d.textContent=fmtLong(selectedDate);if($w)$w.textContent='星期'+WD[selectedDate.getDay()]}
+  function selectDate(date){selectedDate=date;if(date.getMonth()!==currentMonth||date.getFullYear()!==currentYear){currentMonth=date.getMonth();currentYear=date.getFullYear()}renderCalendar();loadMedia()}
+  function loadMedia(){
+    const ds=formatDateForFile(selectedDate);stopAudio();
+    $imgContainer.classList.remove('hidden');$placeholder.classList.add('hidden');
+    const img=$imgContainer.querySelector('img');
+    img.onload=()=>{$imgContainer.classList.remove('hidden');$placeholder.classList.add('hidden');$imgContainer.style.animation='none';void $imgContainer.offsetHeight;$imgContainer.style.animation=''};
+    img.onerror=()=>{$imgContainer.classList.add('hidden');$placeholder.classList.remove('hidden');$placeholder.style.animation='none';void $placeholder.offsetHeight;$placeholder.style.animation=''};
+    img.src=`media/${ds}.jpg`;img.alt=`${ds} 的圖片`;
+    audioEl.src=`media/${ds}.mp3`;audioEl.load();
+    audioEl.oncanplaythrough=()=>{$audioPlayer.classList.remove('hidden');$audioPlayer.querySelector('.track-name').textContent=`${ds}.mp3`;$audioPlayer.style.animation='none';void $audioPlayer.offsetHeight;$audioPlayer.style.animation=''};
+    audioEl.onerror=()=>{$audioPlayer.classList.add('hidden')};
+  }
+  let isPlaying=false,rafId=null;
+  function togglePlay(){if(isPlaying){audioEl.pause();isPlaying=false;updatePlayIcon();cancelAnimationFrame(rafId)}else{audioEl.play().then(()=>{isPlaying=true;updatePlayIcon();tickProgress()}).catch(()=>{})}}
+  function stopAudio(){audioEl.pause();audioEl.currentTime=0;isPlaying=false;updatePlayIcon();cancelAnimationFrame(rafId);const p=document.querySelector('.progress');if(p)p.style.width='0%'}
+  function updatePlayIcon(){const btn=document.querySelector('.play-btn');if(!btn)return;btn.innerHTML=isPlaying?'<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>':'<svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>'}
+  function tickProgress(){if(!isPlaying)return;const p=document.querySelector('.progress'),$c=document.querySelector('.time-current'),$d=document.querySelector('.time-duration');if(audioEl.duration){p.style.width=(audioEl.currentTime/audioEl.duration)*100+'%';$c.textContent=fmtTime(audioEl.currentTime);$d.textContent=fmtTime(audioEl.duration)}rafId=requestAnimationFrame(tickProgress)}
+  function fmtTime(s){return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`}
+  audioEl.addEventListener('ended',()=>{isPlaying=false;updatePlayIcon();const p=document.querySelector('.progress');if(p)p.style.width='0%';audioEl.currentTime=0});
+  function initThemeSwitcher(){const saved=localStorage.getItem('dmv-theme')||'editorial';applyTheme(saved);document.querySelectorAll('.theme-btn').forEach(btn=>{btn.addEventListener('click',()=>{const t=btn.dataset.theme;applyTheme(t);localStorage.setItem('dmv-theme',t)})})}
+  function applyTheme(theme){document.documentElement.setAttribute('data-theme',theme);document.querySelectorAll('.theme-btn').forEach(b=>{b.classList.toggle('active',b.dataset.theme===theme)})}
+  function init(){
+    const today=new Date();currentYear=today.getFullYear();currentMonth=today.getMonth();selectedDate=today;
+    $monthLabel=document.querySelector('.month-label');$calGrid=document.querySelector('.cal-grid');$imgContainer=document.querySelector('.image-container');$placeholder=document.querySelector('.placeholder');$audioPlayer=document.querySelector('.audio-player');
+    document.querySelector('.btn-prev').addEventListener('click',()=>{currentMonth--;if(currentMonth<0){currentMonth=11;currentYear--}renderCalendar()});
+    document.querySelector('.btn-next').addEventListener('click',()=>{currentMonth++;if(currentMonth>11){currentMonth=0;currentYear++}renderCalendar()});
+    document.querySelector('.btn-today')?.addEventListener('click',()=>selectDate(new Date()));
+    document.querySelector('.play-btn').addEventListener('click',togglePlay);
+    document.querySelector('.progress-bar').addEventListener('click',(e)=>{if(!audioEl.duration)return;const r=e.currentTarget.getBoundingClientRect();audioEl.currentTime=((e.clientX-r.left)/r.width)*audioEl.duration});
+    document.querySelector('.volume-slider').addEventListener('input',(e)=>{audioEl.volume=e.target.value});
+    renderCalendar();loadMedia();initThemeSwitcher();
+  }
+  document.addEventListener('DOMContentLoaded',init);
+})();
+</script>
+</body>
+</html>
